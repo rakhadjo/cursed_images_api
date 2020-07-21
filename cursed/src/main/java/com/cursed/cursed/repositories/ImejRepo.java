@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cursed.repositories;
+package com.cursed.cursed.repositories;
 
-import com.cursed.models.Imej;
+import com.cursed.cursed.models.Imej;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
