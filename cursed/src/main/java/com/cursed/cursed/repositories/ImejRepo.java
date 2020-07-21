@@ -9,12 +9,14 @@ import com.cursed.cursed.models.Imej;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author rakhadjo
  */
-@RepositoryRestResource(collectionResourceRel = "imejs", path = "imejs") 
+//@RepositoryRestResource(collectionResourceRel = "imejs", path = "imejs") 
+@Repository
 public interface ImejRepo extends MongoRepository<Imej, String>{
     
     Imej findById();

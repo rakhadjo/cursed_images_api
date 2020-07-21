@@ -5,6 +5,10 @@
  */
 package com.cursed.cursed.control;
 
+import com.cursed.cursed.repositories.ImejRepo;
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -13,7 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author rakhadjo
  */
 @RestController
-@RequestMapping("/c")
+@RequestMapping("/api")
 public class CursedControl {
+    
+    @Autowired
+    private ImejRepo repo;
+    
+    @GetMapping("/test")
+    public Document getTest() {
+        return new Document()
+                .append("rc", "00")
+                .append("code", repo.findAll());
+    }
     
 }
