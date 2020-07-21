@@ -5,6 +5,7 @@
  */
 package com.cursed.models;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,14 +13,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author rakhadjo
  */
-@Document(collection = "images")
+@Document(collection = "imej")
 public class Imej {
     @Id
-    private String id;
+    private ObjectId _id;
     private String url;
     
     public Imej() {}
     
     public String getUrl() { return this.url; }
-    public String getId() { return this.id; }
+    public ObjectId getId() { return this._id; }
 }
