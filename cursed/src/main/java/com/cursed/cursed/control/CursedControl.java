@@ -6,7 +6,10 @@
 package com.cursed.cursed.control;
 
 import com.cursed.cursed.models.Imej;
+import com.cursed.cursed.models.Response;
+import com.cursed.cursed.models.Result;
 import com.cursed.cursed.repositories.ImejRepo;
+import java.util.List;
 import java.util.Random;
 import javax.validation.Valid;
 import org.bson.Document;
@@ -27,31 +30,36 @@ public class CursedControl {
     
     @Autowired
     private ImejRepo repo;
-    //private Document entries = new Document("code", repo.findAll());
     private Random rand = new Random();
     
     @GetMapping("/test")
     public Document getTest() {
-        return new Document()
-                .append("rc", "00")
-                .append("code", repo.findAll());
+        Response r = new Response();
+        try {
+            List<Imej> list = repo.findAll();
+            r.setCodes(Result.SUCCESS);
+            r.setImejs(list);
+        } catch (Exception e) {
+            r.setCodes(Result.FAIL_ALL);
+        }
+        return r.toJSON();
     }
     
     @GetMapping("/get")
     public Document getRandom() {
         int num = rand.nextInt((int)repo.count());
-        return repo.findByNum(num).toJSON();
+        Response r = new Response(Result.SUCCESS);
+        r.setImej(repo.findByNum(num));
+        return r.toJSON();
     }
     
     @PostMapping("/save")
     public Document saveImej(@Valid @RequestBody Imej imej) {
         if (imej.getNum() > (int)repo.count() && repo.findByNum(imej.getNum()) == null) {
             repo.save(imej);
-            return new Document().append("rc", "00");
-        }
-        return new Document()
-                .append("rc", "10")
-                .append("message", "num already exists");
+            return new Response(Result.SUCCESS).toJSON();
+        } return new Response(Result.EXISTS).toJSON();
+        
     }
     
 }
