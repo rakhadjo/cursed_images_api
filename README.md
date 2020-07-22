@@ -6,11 +6,11 @@ Upon successful calling of the API, a response body will look like this:
 ```
 {
 	"rc": "00",
-	"message": "success",
+	"message": "Success",
 	"imej": {
 		"ObjectID": "....",
-		"num": 3,
-		"url": ...
+		"url": ...,
+		"num": 3
 		}
 }
 ```
@@ -19,7 +19,7 @@ Upon successful calling of the API, a response body will look like this:
 Failed calls will look something like:
 ```
 {
-	"rc": "00",
-	"message": "image already exists",
+	"rc": "99",
+	"message": "Undefined Error"
 }
 ```
