@@ -6,12 +6,15 @@
 package com.cursed.cursed.models;
 
 import java.util.List;
-import org.bson.Document;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
 
 /**
  *
  * @author rakhadjo
  */
+@Document(collection = "responses")
 public class Response {
     
     //  Response Code
@@ -57,8 +60,8 @@ public class Response {
         this.imejs = l;
     }
     
-    public Document toJSON() {
-        Document doc = new Document()
+    public org.bson.Document toJSON() {
+        org.bson.Document doc = new org.bson.Document()
                 .append("rc", this.rc)
                 .append("message", this.message);
         

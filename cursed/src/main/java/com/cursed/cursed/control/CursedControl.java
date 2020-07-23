@@ -9,6 +9,7 @@ import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
 import com.cursed.cursed.models.Result;
 import com.cursed.cursed.repositories.ImejRepo;
+import com.cursed.cursed.repositories.ResponsesRepo;
 import java.util.List;
 import java.util.Random;
 import javax.validation.Valid;
@@ -27,11 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping("/api")
 public class CursedControl {
-    
+
     @Autowired
     private ImejRepo repo;
+    @Autowired
+    private ResponsesRepo resp_repo;
     private Random rand = new Random();
-    
+
     @GetMapping("/test")
     public Document getTest() {
         Response r = new Response();
@@ -44,22 +47,30 @@ public class CursedControl {
         }
         return r.toJSON();
     }
-    
+
     @GetMapping("/get")
     public Document getRandom() {
-        int num = rand.nextInt((int)repo.count());
+        int num = rand.nextInt((int) repo.count());
         Response r = new Response(Result.SUCCESS);
         r.setImej(repo.findByNum(num));
         return r.toJSON();
     }
-    
+
+    @GetMapping("/get2")
+    public Response getRandom2() {
+        Response r = new Response(Result.SUCCESS);
+        resp_repo.save(r);
+        return r;
+    }
+
     @PostMapping("/save")
     public Document saveImej(@Valid @RequestBody Imej imej) {
-        if (imej.getNum() > (int)repo.count() && repo.findByNum(imej.getNum()) == null) {
+        if (imej.getNum() > (int) repo.count() && repo.findByNum(imej.getNum()) == null) {
             repo.save(imej);
             return new Response(Result.SUCCESS).toJSON();
-        } return new Response(Result.EXISTS).toJSON();
-        
+        }
+        return new Response(Result.EXISTS).toJSON();
+
     }
-    
+
 }
