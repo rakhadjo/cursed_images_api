@@ -5,6 +5,7 @@
  */
 package com.cursed.cursed.control;
 
+import com.cursed.cursed.misc.Key;
 import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
 import com.cursed.cursed.models.Result;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -49,13 +51,18 @@ public class CursedControl {
     }
 
     @GetMapping("/get")
-    public Document getRandom() {
+    public Document getRandom(@RequestHeader Key key) {
+        Response r;
+        
         int num = rand.nextInt((int) repo.count());
-        Response r = new Response(Result.SUCCESS);
+        r = new Response(Result.SUCCESS);
         r.setImej(repo.findByNum(num));
         return r.toJSON();
     }
 
+    /*
+    EXPERIMENTAL RANDOM GET
+    */
     @GetMapping("/get2")
     public Response getRandom2() {
         Response r = new Response(Result.SUCCESS);
