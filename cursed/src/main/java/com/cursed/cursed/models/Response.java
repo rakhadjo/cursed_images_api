@@ -76,12 +76,11 @@ public class Response {
                 .append("rc", this.rc)
                 .append("message", this.message);
         
-        try {
+        if (this.imej != null) {
             doc.append("imej", this.imej);
-        } catch (Exception e) {
-            doc.append("Error", e.getMessage());
+        } else if (!this.imejs.isEmpty()) {
+            doc.append("imejs", this.imejs);
         }
-        doc.append("imejs", this.imejs);
         return doc;
         
     }
