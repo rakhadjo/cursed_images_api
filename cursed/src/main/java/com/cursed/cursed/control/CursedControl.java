@@ -11,6 +11,7 @@ import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
 import com.cursed.cursed.models.ResponseResult;
 import com.cursed.cursed.repositories.ImejRepo;
+import com.cursed.cursed.repositories.KeyRepo;
 import com.cursed.cursed.repositories.ResponsesRepo;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -61,6 +62,12 @@ public class CursedControl {
     private ImejRepo repo;
     @Autowired
     private ResponsesRepo resp_repo;
+    @Autowired
+    private KeyRepo key_repo;
+    
+    private boolean verify2(String key) {
+        return key_repo.findKey(key) == null;
+    }
     private Random rand = new Random();
 
     @GetMapping("/test")

@@ -18,7 +18,7 @@ public class Key {
     
     @Id
     private ObjectId _id;
-    private String api_key;
+    private String api_key = null;
     
     public Key() {}
     
