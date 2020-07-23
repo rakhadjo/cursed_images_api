@@ -9,8 +9,10 @@ package com.cursed.cursed.models;
  *
  * @author rakhadjo
  */
-public enum Result {
+public enum ResponseResult {
     SUCCESS,
     EXISTS,
+    FAIL,
+    KEY_FAIL,
     FAIL_ALL
 }

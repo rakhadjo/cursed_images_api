@@ -5,12 +5,18 @@
  */
 package com.cursed.cursed.control;
 
+import com.cursed.cursed.misc.InvalidAPIKeyException;
 import com.cursed.cursed.misc.Key;
 import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
-import com.cursed.cursed.models.Result;
+import com.cursed.cursed.models.ResponseResult;
 import com.cursed.cursed.repositories.ImejRepo;
 import com.cursed.cursed.repositories.ResponsesRepo;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Random;
 import javax.validation.Valid;
@@ -30,6 +36,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping("/api")
 public class CursedControl {
+    
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "password";
+    private static final String CONN_STRING = "jdbc:mysql://localhost:3306/cursed_database";
+    
+    private boolean verify(String key) {
+        try {
+            Connection conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM api_keys;";
+            ResultSet rslt = stmt.executeQuery(sql);
+            while (rslt.next()) {
+                if (rslt.getString("api_key").equals(key)) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            
+        } return false; 
+    }
 
     @Autowired
     private ImejRepo repo;
@@ -39,24 +65,32 @@ public class CursedControl {
 
     @GetMapping("/test")
     public Document getTest() {
-        Response r = new Response();
+        Response r;
         try {
             List<Imej> list = repo.findAll();
-            r.setCodes(Result.SUCCESS);
+            r = new Response(ResponseResult.SUCCESS);
             r.setImejs(list);
         } catch (Exception e) {
-            r.setCodes(Result.FAIL_ALL);
+            r = new Response(ResponseResult.FAIL_ALL);
         }
         return r.toJSON();
     }
 
     @GetMapping("/get")
-    public Document getRandom(@RequestHeader Key key) {
+    public Document getRandom(@RequestHeader String key) {
         Response r;
-        
-        int num = rand.nextInt((int) repo.count());
-        r = new Response(Result.SUCCESS);
-        r.setImej(repo.findByNum(num));
+        if (verify(key)) {
+            try {
+                int num = rand.nextInt((int) repo.count());
+                r = new Response(ResponseResult.SUCCESS);
+                r.setImej(repo.findByNum(num));
+            } catch (Exception e) {
+                r = new Response(ResponseResult.FAIL_ALL);
+            }
+        } else {
+            r = new Response(ResponseResult.KEY_FAIL);
+        }
+        r.setKey(key);
         return r.toJSON();
     }
 
@@ -64,8 +98,10 @@ public class CursedControl {
     EXPERIMENTAL RANDOM GET
     */
     @GetMapping("/get2")
-    public Response getRandom2() {
-        Response r = new Response(Result.SUCCESS);
+    public Response getRandom2(@RequestHeader String key) {
+        Response r = verify(key) ? 
+                new Response(ResponseResult.SUCCESS) : 
+                new Response(ResponseResult.KEY_FAIL);
         resp_repo.save(r);
         return r;
     }
@@ -74,9 +110,9 @@ public class CursedControl {
     public Document saveImej(@Valid @RequestBody Imej imej) {
         if (imej.getNum() > (int) repo.count() && repo.findByNum(imej.getNum()) == null) {
             repo.save(imej);
-            return new Response(Result.SUCCESS).toJSON();
+            return new Response(ResponseResult.SUCCESS).toJSON();
         }
-        return new Response(Result.EXISTS).toJSON();
+        return new Response(ResponseResult.EXISTS).toJSON();
 
     }
 
