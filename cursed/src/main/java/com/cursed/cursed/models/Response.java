@@ -6,52 +6,42 @@
 package com.cursed.cursed.models;
 
 import java.util.List;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-
+import org.bson.Document;
 
 /**
  *
  * @author rakhadjo
  */
-@Document(collection = "responses")
 public class Response {
     
     //  Response Code
-    private String rc = null;
+    private String rc;
     //  Message
-    private String message = null;
+    private String message;
     //  Imej object
-    private Imej imej = null;
+    private Imej imej;
     //  Imej List
-    private List<Imej> imejs = null;
-    //  API Key used
-    private String api_key = null;
+    private List<Imej> imejs;
     
     public Response() {}
     
-    public Response(ResponseResult m) {
+    public Response(Result m) {
+        setCodes(m);
+    }
+    
+    public final void setCodes(Result m) {
         switch (m) {
             case SUCCESS:
                 this.rc = "00";
                 this.message = "Success";
                 break;
-            case KEY_FAIL:
-                this.rc = "01";
-                this.message = "Invalid API Key";
-                break;
             case EXISTS:
                 this.rc = "10";
                 this.message = "Already exists";
                 break;
-            case FAIL:
-                this.rc = "11";
-                this.message = "Failed to retrieve";
-                break;
             case FAIL_ALL:
-                this.rc = "12";
+                this.rc = "11";
                 this.message = "Failed to retrieve all";
-                break;
             default:
                 this.rc = "99";
                 this.message = "Undefined Error";
@@ -67,18 +57,15 @@ public class Response {
         this.imejs = l;
     }
     
-    public void setKey(String api_key) {
-        this.api_key = api_key;
-    }
-    
-    public org.bson.Document toJSON() {
-        org.bson.Document doc = new org.bson.Document()
+    public Document toJSON() {
+        Document doc = new Document()
                 .append("rc", this.rc)
                 .append("message", this.message);
         
-        if (this.imej != null) {
+        if (!this.imej.equals(null)) {
             doc.append("imej", this.imej);
-        } else if (!this.imejs.isEmpty()) {
+        }
+        else if (!this.imejs.isEmpty()) {
             doc.append("imejs", this.imejs);
         }
         return doc;

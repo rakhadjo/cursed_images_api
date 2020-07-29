@@ -5,6 +5,12 @@
  */
 package com.cursed.cursed.misc;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+/**
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,20 +19,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author rakhadjo
  */
-@Document(collection = "api_keys")
+//@Document(collection = "api_keys")
+@Entity
+@Table(name = "api_keys")
 public class Key {
     
     @Id
-    private ObjectId _id;
-    private String api_key = null;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int id;
+    private String api_key;
     
     public Key() {}
     
-    public void set_id(ObjectId _id) {
-        this._id = _id;
+    public Key(String key) {
+        this.api_key = key;
     }
-    public ObjectId get_id() {
-        return this._id;
+    
+    public void set_id(Integer id) {
+        this.id = id;
+    }
+    public int getId() {
+        return this.id;
     }
     
     public void setapi_key(String api_key) {
