@@ -24,4 +24,6 @@ public interface ImejRepo extends MongoRepository<Imej, String>{
     
     List<Imej> findAll();
     
+    
+    
 }

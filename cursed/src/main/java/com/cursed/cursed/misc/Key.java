@@ -5,12 +5,6 @@
  */
 package com.cursed.cursed.misc;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-/**
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,14 +13,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * @author rakhadjo
  */
-//@Document(collection = "api_keys")
-@Entity
-@Table(name = "api_keys")
+@Document(collection = "api_keys")
 public class Key {
     
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private int id;
+    private ObjectId _id;
+    private String email;
     private String api_key;
     
     public Key() {}
@@ -35,11 +27,24 @@ public class Key {
         this.api_key = key;
     }
     
-    public void set_id(Integer id) {
-        this.id = id;
+    public Key(String email, String key) {
+        this.email = email;
+        this.api_key = key;
     }
-    public int getId() {
-        return this.id;
+    
+    public void set_id(ObjectId id) {
+        this._id = id;
+    }
+    public ObjectId get_id() {
+        return this._id;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getEmail() {
+        return this.email;
     }
     
     public void setapi_key(String api_key) {
@@ -47,5 +52,11 @@ public class Key {
     }
     public String getapi_key() {
         return this.api_key;
+    }
+    
+    public org.bson.Document toJSON() {
+        return new org.bson.Document()
+                .append("email", this.email)
+                .append("api_key", this.api_key);
     }
 }
