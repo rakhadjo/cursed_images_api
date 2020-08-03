@@ -11,6 +11,8 @@ package com.cursed.cursed.models;
  */
 public enum Result {
     SUCCESS,
-    EXISTS,
-    FAIL_ALL
+    IMAGE_EXISTS,
+    FAIL,
+    KEY_REGISTER_FAIL,
+    FAIL_GET_IMAGE
 }

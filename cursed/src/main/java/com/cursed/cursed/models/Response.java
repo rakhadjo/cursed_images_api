@@ -5,6 +5,7 @@
  */
 package com.cursed.cursed.models;
 
+import com.cursed.cursed.misc.Key;
 import java.util.List;
 import org.bson.Document;
 
@@ -22,6 +23,8 @@ public class Response {
     private Imej imej;
     //  Imej List
     private List<Imej> imejs;
+    //  Key Object
+    private Key key;
     
     public Response() {}
     
@@ -35,18 +38,31 @@ public class Response {
                 this.rc = "00";
                 this.message = "Success";
                 break;
-            case EXISTS:
+            case IMAGE_EXISTS:
                 this.rc = "10";
-                this.message = "Already exists";
+                this.message = "Image already exists";
                 break;
-            case FAIL_ALL:
+            case FAIL_GET_IMAGE:
                 this.rc = "11";
-                this.message = "Failed to retrieve all";
+                this.message = "Failed to retrieve image";
+                break;
+            case KEY_REGISTER_FAIL:
+                this.rc = "12";
+                this.message = "Key / Email registration failed";
+                break;
+            case FAIL:
+                this.rc = "98";
+                this.message = "Misc. Fail";
+                break;
             default:
                 this.rc = "99";
                 this.message = "Undefined Error";
                 break;
         }
+    }
+    
+    public void setMessage(String message) {
+        this.message = message;
     }
     
     public void setImej(Imej i) {
@@ -57,16 +73,25 @@ public class Response {
         this.imejs = l;
     }
     
+    public void setKey(Key key) {
+        this.key = key;
+    }
+    
     public Document toJSON() {
         Document doc = new Document()
                 .append("rc", this.rc)
                 .append("message", this.message);
         
-        if (!this.imej.equals(null)) {
-            doc.append("imej", this.imej);
+        if (this.imej != null) {
+            doc.append("imej", this.imej.toJSON());
         }
-        else if (!this.imejs.isEmpty()) {
-            doc.append("imejs", this.imejs);
+        if (this.imejs != null) {
+            if (!this.imejs.isEmpty()) {
+                doc.append("imejs", this.imejs);
+                }
+        }
+        if (this.key != null) {
+            doc.append("key", this.key.toJSON());
         }
         return doc;
         

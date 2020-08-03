@@ -8,22 +8,17 @@ package com.cursed.cursed.control;
 import com.cursed.cursed.misc.Key;
 import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
+import com.cursed.cursed.models.ResponseResult;
 import com.cursed.cursed.models.Result;
 import com.cursed.cursed.repositories.ImejRepo;
 import com.cursed.cursed.repositories.KeyRepo;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import javax.validation.Valid;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.SampleOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,15 +31,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RestController
 @RequestMapping("/api")
 public class CursedControl {
-    
+
     @Autowired
-    private ImejRepo repo;
+    private ImejRepo imejRepo;
     @Autowired
     private KeyRepo keyRepo;
     private Random rand = new Random();
-    
+
     @GetMapping("/testkey")
-    public Document testKey(@RequestHeader Map<String,String> headers) {
+    public Document testKey(@RequestHeader Map<String, String> headers) {
         try {
             Document d = new Document();
             Key k = keyRepo.findByEmail(headers.get("email"));
@@ -54,63 +49,62 @@ public class CursedControl {
         } catch (Exception e) {
             return new Document("error", e.getMessage());
         }
-        
+
     }
-    
+
     @GetMapping("/test")
     public Document getTest() {
         Response r = new Response();
         try {
-            List<Imej> list = repo.findAll();
+            List<Imej> list = imejRepo.findAll();
             r.setCodes(Result.SUCCESS);
             r.setImejs(list);
         } catch (Exception e) {
-            r.setCodes(Result.FAIL_ALL);
+            r.setCodes(Result.FAIL_GET_IMAGE);
         }
         return r.toJSON();
     }
-    
+
     @GetMapping("/get")
     public Document getRandom() {
-        int num = rand.nextInt((int)repo.count());
+        //int num = rand.nextInt((int) imejRepo.count());
         Response r = new Response(Result.SUCCESS);
-        r.setImej(repo.findByNum(num));
+        //r.setImej(repo.findByNum(num));
         return r.toJSON();
     }
-    
+
     @GetMapping("/get2")
     public Document random2() {
-        SampleOperation sampleStage = Aggregation.sample(5);
-        Aggregation aggregation = Aggregation.newAggregation(sampleStage);
-        AggregationResults<Imej> output = mongoTemplate.aggregate(aggregation, "collection", Imej.class);
+
         return new Document();
     }
-    
-    @PostMapping("/save")
-    public Document saveImej(@Valid @RequestBody Imej imej) {
-        if (imej.getNum() > (int)repo.count() && repo.findByNum(imej.getNum()) == null) {
-            repo.save(imej);
-            return new Response(Result.SUCCESS).toJSON();
-        } return new Response(Result.EXISTS).toJSON();
-        
-    }
-    
-    @PostMapping("/savekey")
-    public @ResponseBody Document addKey(@RequestBody Key api_key) {
+
+    @PostMapping("/register")
+    public @ResponseBody
+    Document addKey(@RequestHeader Map<String, String> headers) {
+        Response response;
         try {
-            keyRepo.save(
-                    api_key
-            );
-            return new Document().append("new key", api_key);
+            Key check = keyRepo.findByEmail(headers.get("email"));
+            if (check == null) {
+                Key k = new Key(headers.get("email"));
+                keyRepo.save(k);
+                response = new Response(Result.SUCCESS);
+                response.setKey(k);
+                return response.toJSON();
+            } else {
+                return new Response(Result.KEY_REGISTER_FAIL).toJSON();
+            }
         } catch (Exception e) {
-            return new Document().append("fail", e.getMessage());
+            response = new Response(Result.FAIL);
+            response.setMessage(e.getMessage());
+            return new Document("error", e.getMessage());
         }
     }
+
     //bad practice, never do this!
     @GetMapping("/allkeys")
     public List<Key> getKeys() {
         return keyRepo.findAll();
-        
     }
-    
+
 }

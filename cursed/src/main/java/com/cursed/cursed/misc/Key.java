@@ -8,6 +8,7 @@ package com.cursed.cursed.misc;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Random;
 
 /**
  *
@@ -16,6 +17,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "api_keys")
 public class Key {
     
+    private static Random rand = new Random();
+    
     @Id
     private ObjectId _id;
     private String email;
@@ -23,13 +26,24 @@ public class Key {
     
     public Key() {}
     
-    public Key(String key) {
-        this.api_key = key;
+    public Key(String email) {
+        this.email = email;
+        this.api_key = keyGen();
     }
     
     public Key(String email, String key) {
         this.email = email;
         this.api_key = key;
+    }
+    
+    private static String keyGen() {
+        String newKey = "";
+        String charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (int i = 0; i < 36; i++) {
+            int num = rand.nextInt(charset.length());
+            newKey += (i % 9 == 0) && (i != 0) ? "-" : charset.charAt(num);
+        }
+        return newKey;
     }
     
     public void set_id(ObjectId id) {
