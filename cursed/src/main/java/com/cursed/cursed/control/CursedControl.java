@@ -66,10 +66,18 @@ public class CursedControl {
     }
 
     @GetMapping("/get")
-    public Document getRandom() {
-        //int num = rand.nextInt((int) imejRepo.count());
-        Response r = new Response(Result.SUCCESS);
-        //r.setImej(repo.findByNum(num));
+    public @ResponseBody Document getRandom(@RequestHeader Map<String, String> headers) {
+//        //int num = rand.nextInt((int) imejRepo.count());
+//        Response r = new Response(Result.SUCCESS);
+//        //r.setImej(repo.findByNum(num));
+//        return r.toJSON();
+        Response r;
+        try {
+            Key k = new Key(headers.get("email"), headers.get("api_key"));
+        } catch(Exception e) {
+            
+        }
+        r = new Response();
         return r.toJSON();
     }
 
@@ -80,8 +88,7 @@ public class CursedControl {
     }
 
     @PostMapping("/register")
-    public @ResponseBody
-    Document addKey(@RequestHeader Map<String, String> headers) {
+    public @ResponseBody Document addKey(@RequestHeader Map<String, String> headers) {
         Response response;
         try {
             Key check = keyRepo.findByEmail(headers.get("email"));

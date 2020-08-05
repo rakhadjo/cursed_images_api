@@ -50,12 +50,24 @@ public class Response {
                 this.rc = "12";
                 this.message = "Key / Email registration failed";
                 break;
+            case FAIL_EMAIL_KEY_VERIFICATION:
+                this.rc = "13";
+                this.message = "Email and API Key Invalid";
+                break;
+            case FAIL_EMAIL_VERIFICATION:
+                this.rc = "13a";
+                this.message = "Email Invalid";
+                break;
+            case FAIL_KEY_VERIFICATION:
+                this.rc = "13b";
+                this.message = "API Key Invalid";
+                break;
             case FAIL:
                 this.rc = "98";
                 this.message = "Misc. Fail";
                 break;
             default:
-                this.rc = "99";
+                this.rc = "-";
                 this.message = "Undefined Error";
                 break;
         }

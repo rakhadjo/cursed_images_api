@@ -6,9 +6,7 @@
 package com.cursed.cursed.repositories;
 
 import com.cursed.cursed.misc.Key;
-import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -16,9 +14,8 @@ import org.springframework.stereotype.Repository;
  *
  * @author rakhadjo
  */
-//@Repository
+@Repository
 public interface KeyRepo extends MongoRepository<Key, String>{
-//public interface KeyRepo extends CrudRepository<Key, String>{
     
     Key findByEmail(@Param("email") String email);
     
