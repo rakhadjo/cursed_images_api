@@ -40,6 +40,11 @@ public class CursedControl {
     private KeyRepo keyRepo;
     private Random rand = new Random();
 
+    /**
+     *
+     * @param headers
+     * @return
+     */
     @GetMapping("/testkey")
     public Document testKey(@RequestHeader Map<String, String> headers) {
         try {
@@ -97,7 +102,7 @@ public class CursedControl {
 
     /**
      *
-     * @param headers
+     * @param n
      * @return
      */
 //    @GetMapping("/get2")
@@ -139,6 +144,11 @@ public class CursedControl {
         return r.toJSON();
     }
 
+    /**
+     *
+     * @param headers
+     * @return
+     */
     @PostMapping("/register")
     public @ResponseBody
     Document addKey(@RequestHeader Map<String, String> headers) {
@@ -161,6 +171,11 @@ public class CursedControl {
         }
     }
 
+    /**
+     *
+     * @param i
+     * @return
+     */
     @PostMapping("/save")
     public @ResponseBody
     Document saveImej(@RequestBody Imej i) {

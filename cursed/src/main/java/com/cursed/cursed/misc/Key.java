@@ -39,12 +39,24 @@ public class Key {
         return Pattern.matches(VALID_API_KEY_REGEX, key);
     }
     
+    /**
+     *
+     * @param k
+     * @return
+     */
     public boolean verify(Key k) {
         return isValidKey(k.getapi_key()) && isValid(k.getEmail());
     }
 
+    /**
+     *
+     */
     public Key() {}
 
+    /**
+     *
+     * @param email
+     */
     public Key(String email) {
         if (isValid(email)) {
             this.email = email;
@@ -55,6 +67,11 @@ public class Key {
         }
     }
 
+    /**
+     *
+     * @param email
+     * @param key
+     */
     public Key(String email, String key) {
         if (isValid(email) && isValidKey(key)) {
             this.email = email;
@@ -72,30 +89,54 @@ public class Key {
         return newKey;
     }
 
+    /**
+     *
+     * @return
+     */
     public ObjectId get_id() {
         return this._id;
     }
 
+    /**
+     *
+     * @param email
+     */
     public void setEmail(String email) {
         if (isValid(email)) {
             this.email = email;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     *
+     * @param api_key
+     */
     public void setapi_key(String api_key) {
         if (isValidKey(api_key)) {
             this.api_key = api_key;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getapi_key() {
         return this.api_key;
     }
 
+    /**
+     *
+     * @return
+     */
     public org.bson.Document toJSON() {
         return new org.bson.Document()
                 .append("email", this.email)

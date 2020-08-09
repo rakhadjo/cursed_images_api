@@ -11,6 +11,10 @@ package com.cursed.cursed.misc;
  */
 public class BadImejException extends Exception {
     
+    /**
+     *
+     * @param message
+     */
     public BadImejException(String message) {
         super(message);
     }

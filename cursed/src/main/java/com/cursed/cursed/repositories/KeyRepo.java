@@ -17,6 +17,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KeyRepo extends MongoRepository<Key, String>{
     
+    /**
+     *
+     * @param email
+     * @return
+     */
     Key findByEmail(@Param("email") String email);
     
 }
