@@ -9,9 +9,9 @@ package com.cursed.cursed.misc;
  *
  * @author rakhadjo
  */
-public class InvalidAPIKeyException extends Exception {
+public class BadImejException extends Exception {
     
-    public InvalidAPIKeyException(String message) {
+    public BadImejException(String message) {
         super(message);
     }
     
