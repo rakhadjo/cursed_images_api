@@ -53,9 +53,10 @@ public class CursedControl {
         }
 
     }
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     @GetMapping("/test")
     public Document getTest() {
@@ -69,36 +70,48 @@ public class CursedControl {
         }
         return r.toJSON();
     }
+
     /**
-     * 
-     * @return 
+     *
+     * @param headers
+     * @return
      */
     @GetMapping("/get")
     public @ResponseBody
-    Document getRandom() {
+    Document getRandom(@RequestHeader Map<String, String> headers) {
         Response r;
-        int num = rand.nextInt((int) imejRepo.count());
-        r = new Response(Result.SUCCESS);
-        r.setImej(imejRepo.findBy_id(num));
+        try {
+            Key k = keyRepo.findByEmail(headers.get("email"));
+            if (k.getapi_key().equals(headers.get("api_key"))) {
+                int num = rand.nextInt((int) imejRepo.count());
+                r = new Response(Result.SUCCESS);
+                r.setImej(imejRepo.findBy_id(num));
+            } else {
+                r = new Response(Result.FAIL_EMAIL_KEY_VERIFICATION);
+            }
+        } catch (Exception e) {
+            r = new Response(Result.FAIL);
+        }
         return r.toJSON();
     }
+
     /**
-     * 
+     *
      * @param headers
-     * @return 
+     * @return
      */
-    @GetMapping("/get2")
-    public Document random2(@RequestHeader Map<String, String> headers) {
-        // Takes the number of requested images as a header "num";
-        int numImages = Integer.parseInt(headers.get("num"));
-        if (numImages < 2) {
-            return getRandom();
-        }
-        if (numImages > 100) {
-            return getNRandom(100);
-        }
-        return getNRandom(numImages);
-    }
+//    @GetMapping("/get2")
+//    public Document random2(@RequestHeader Map<String, String> headers) {
+//        // Takes the number of requested images as a header "num";
+//        int numImages = Integer.parseInt(headers.get("num"));
+//        if (numImages < 2) {
+//            return getRandom();
+//        }
+//        if (numImages > 100) {
+//            return getNRandom(100);
+//        }
+//        return getNRandom(numImages);
+//    }
 
     public Document getNRandom(int n) {
         int maxImages = (int) imejRepo.count();
@@ -149,7 +162,8 @@ public class CursedControl {
     }
 
     @PostMapping("/save")
-    public @ResponseBody Document saveImej(@RequestBody Imej i) {
+    public @ResponseBody
+    Document saveImej(@RequestBody Imej i) {
         Response r;
         String url = i.getUrl();
         if (imejRepo.findByUrl(url) != null) {
