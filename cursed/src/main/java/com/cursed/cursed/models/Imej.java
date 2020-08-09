@@ -37,6 +37,7 @@ public class Imej {
     /**
      * Constructor with URL in String format
      * @param url
+     * @throws com.cursed.cursed.misc.BadImejException
      */
     public Imej(String url) throws BadImejException {
         if (isValidURL(url)) {
@@ -73,6 +74,7 @@ public class Imej {
      * 
      * @param u
      * @return 
+     * @throws com.cursed.cursed.misc.BadImejException 
      */
     public boolean isValidURL(String u) throws BadImejException {
         try {
@@ -81,7 +83,6 @@ public class Imej {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new BadImejException("Bad URL Format. Try again!");
-            //return false;
         }
         
         
