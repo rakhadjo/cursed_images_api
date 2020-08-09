@@ -10,12 +10,44 @@ package com.cursed.cursed.models;
  * @author rakhadjo
  */
 public enum Result {
+
+    /**
+     *
+     */
     SUCCESS,
+
+    /**
+     *
+     */
     IMAGE_EXISTS,
+
+    /**
+     *
+     */
     FAIL,
+
+    /**
+     *
+     */
     KEY_REGISTER_FAIL,
+
+    /**
+     *
+     */
     FAIL_GET_IMAGE,
+
+    /**
+     *
+     */
     FAIL_EMAIL_KEY_VERIFICATION,
+
+    /**
+     *
+     */
     FAIL_KEY_VERIFICATION,
+
+    /**
+     *
+     */
     FAIL_EMAIL_VERIFICATION
 }

@@ -26,12 +26,23 @@ public class Response {
     //  Key Object
     private Key key;
     
+    /**
+     *
+     */
     public Response() {}
     
+    /**
+     *
+     * @param m
+     */
     public Response(Result m) {
         setCodes(m);
     }
     
+    /**
+     *
+     * @param m
+     */
     public final void setCodes(Result m) {
         switch (m) {
             case SUCCESS:
@@ -73,22 +84,42 @@ public class Response {
         }
     }
     
+    /**
+     *
+     * @param message
+     */
     public void setMessage(String message) {
         this.message = message;
     }
     
+    /**
+     *
+     * @param i
+     */
     public void setImej(Imej i) {
         this.imej = i;
     }
     
+    /**
+     *
+     * @param l
+     */
     public void setImejs(List<Imej> l) {
         this.imejs = l;
     }
     
+    /**
+     *
+     * @param key
+     */
     public void setKey(Key key) {
         this.key = key;
     }
     
+    /**
+     *
+     * @return
+     */
     public Document toJSON() {
         Document doc = new Document()
                 .append("rc", this.rc)
