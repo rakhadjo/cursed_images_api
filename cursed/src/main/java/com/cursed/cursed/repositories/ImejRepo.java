@@ -17,7 +17,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ImejRepo extends MongoRepository<Imej, String>{
-    
-    
+
+    Imej findBy_id(int num);
+    Imej findByUrl(String url);
     
 }

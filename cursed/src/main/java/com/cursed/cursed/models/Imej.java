@@ -5,6 +5,10 @@
  */
 package com.cursed.cursed.models;
 
+import com.cursed.cursed.misc.BadImejException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,25 +18,81 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "imej")
 public class Imej {
+
     @Id
     private int _id;
     private String url;
-    //private int num;
+
+    /**
+     *
+     */
+    public static int count;
+
+    /**
+     * Empty Constructor
+     */
+    public Imej() {
+    }
+
+    /**
+     * Constructor with URL in String format
+     * @param url
+     */
+    public Imej(String url) throws BadImejException {
+        if (isValidURL(url)) {
+            this._id = count++;
+            this.url = url;
+        }
+    }
     
-    public Imej() {}
+    /**
+     * 
+     * @param newCount 
+     */
+    public static void setCount(int newCount) {
+        count = newCount;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getUrl() {
+        return this.url;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getId() {
+        return this._id;
+    }
     
-    public Imej(String url) {
-        this.url = url;
-    } 
-    
-    public String getUrl() { return this.url; }
-    public int getId() { return this._id; }
-    //public int getNum() { return this.num; }
-    
+    /**
+     * 
+     * @param u
+     * @return 
+     */
+    public boolean isValidURL(String u) throws BadImejException {
+        try {
+            new URL(u).toURI();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new BadImejException("Bad URL Format. Try again!");
+            //return false;
+        }
+        
+        
+    }
+
+    /**
+     *
+     * @return
+     */
     public org.bson.Document toJSON() {
         return new org.bson.Document()
-                .append("_id", this._id)
-                //.append("num", this.num)
                 .append("url", this.url);
     }
 }
