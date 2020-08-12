@@ -6,8 +6,6 @@
 package com.cursed.cursed.models;
 
 import com.cursed.cursed.misc.BadImejException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
