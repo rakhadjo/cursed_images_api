@@ -49,5 +49,10 @@ public enum Result {
     /**
      *
      */
-    FAIL_EMAIL_VERIFICATION
+    FAIL_EMAIL_VERIFICATION,
+    
+    /**
+     * 
+     */
+    TOO_MANY_REQUESTS
 }

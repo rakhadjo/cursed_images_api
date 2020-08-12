@@ -73,6 +73,10 @@ public class Response {
                 this.rc = "13b";
                 this.message = "API Key Invalid";
                 break;
+            case TOO_MANY_REQUESTS:
+                this.rc = "49";
+                this.message = "Request limit reached";
+                break;
             case FAIL:
                 this.rc = "98";
                 this.message = "Misc. Fail";

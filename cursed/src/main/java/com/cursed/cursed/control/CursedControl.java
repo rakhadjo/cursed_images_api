@@ -11,8 +11,11 @@ import com.cursed.cursed.models.Response;
 import com.cursed.cursed.models.Result;
 import com.cursed.cursed.repositories.ImejRepo;
 import com.cursed.cursed.repositories.KeyRepo;
-import java.util.ArrayList;
-import java.util.HashSet;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Bucket4j;
+import io.github.bucket4j.Refill;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -40,23 +43,19 @@ public class CursedControl {
     private KeyRepo keyRepo;
     private Random rand = new Random();
 
-    /**
-     *
-     * @param headers
-     * @return
-     */
-    @GetMapping("/testkey")
-    public Document testKey(@RequestHeader Map<String, String> headers) {
-        try {
-            Document d = new Document();
-            Key k = keyRepo.findByEmail(headers.get("email"));
-            boolean matches = k.getapi_key().equals(headers.get("api_key"));
-            d.append("keys match", matches);
-            return d;
-        } catch (Exception e) {
-            return new Document("error", e.getMessage());
-        }
+    private final Bucket bucket;
 
+    /**
+     * 
+     */
+    public CursedControl() {
+        //20 requests maximum
+        //20 keys per refill
+        //refilled every one minute
+        Bandwidth limit = Bandwidth.classic(20, Refill.greedy(20, Duration.ofMinutes(1)));
+        this.bucket = Bucket4j.builder()
+                .addLimit(limit)
+                .build();
     }
 
     /**
@@ -85,62 +84,23 @@ public class CursedControl {
     public @ResponseBody
     Document getRandom(@RequestHeader Map<String, String> headers) {
         Response r;
-        try {
-            Key k = keyRepo.findByEmail(headers.get("email"));
-            if (k.getapi_key().equals(headers.get("api_key"))) {
-                int num = rand.nextInt((int) imejRepo.count());
-                r = new Response(Result.SUCCESS);
-                r.setImej(imejRepo.findBy_id(num));
-            } else {
-                r = new Response(Result.FAIL_EMAIL_KEY_VERIFICATION);
+        if (bucket.tryConsume(1)) {
+            try {
+                Key k = keyRepo.findByEmail(headers.get("email"));
+                if (k.getapi_key().equals(headers.get("api_key"))) {
+                    int num = rand.nextInt((int) imejRepo.count());
+                    r = new Response(Result.SUCCESS);
+                    r.setImej(imejRepo.findBy_id(num));
+                } else {
+                    r = new Response(Result.FAIL_EMAIL_KEY_VERIFICATION);
+                }
+            } catch (Exception e) {
+                r = new Response(Result.FAIL);
             }
-        } catch (Exception e) {
-            r = new Response(Result.FAIL);
-        }
-        return r.toJSON();
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     */
-//    @GetMapping("/get2")
-//    public Document random2(@RequestHeader Map<String, String> headers) {
-//        // Takes the number of requested images as a header "num";
-//        int numImages = Integer.parseInt(headers.get("num"));
-//        if (numImages < 2) {
-//            return getRandom();
-//        }
-//        if (numImages > 100) {
-//            return getNRandom(100);
-//        }
-//        return getNRandom(numImages);
-//    }
-
-    public Document getNRandom(int n) {
-        int maxImages = (int) imejRepo.count();
-
-        if (n > maxImages) {
-            return getNRandom(maxImages);
+        } else {
+            r = new Response(Result.TOO_MANY_REQUESTS);
         }
 
-        Response r = new Response(Result.SUCCESS);
-
-        HashSet<Integer> previousNums = new HashSet<Integer>();
-        ArrayList<Imej> images = new ArrayList<Imej>();
-        int num = rand.nextInt((int) imejRepo.count());
-
-        while (n > 0) {
-            while (previousNums.contains(num)) {
-                num = rand.nextInt((int) imejRepo.count());
-            }
-            previousNums.add(num);
-            images.add(imejRepo.findBy_id(num));
-            n--;
-        }
-
-        r.setImejs(images);
         return r.toJSON();
     }
 
