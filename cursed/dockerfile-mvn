@@ -1,0 +1,15 @@
+FROM maven:latest as builder
+
+COPY pom.xml /usr/local/pom.xml
+COPY nbactions.xml /usr/local/nbactions.xml
+COPY src /usr/local/src
+
+WORKDIR /usr/local/
+
+RUN mvn clean install
+
+FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.28-slim
+VOLUME /tmp
+ARG JAR_FILE=/usr/local/target/*.jar
+COPY --from=builder ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/app.jar"]
