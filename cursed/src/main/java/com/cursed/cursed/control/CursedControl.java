@@ -155,5 +155,11 @@ public class CursedControl {
         }
         return r.toJSON();
     }
+    
+    @GetMapping("/sql")
+    public @ResponseBody
+    String testSQL() {
+        return "success";
+    }
 
 }

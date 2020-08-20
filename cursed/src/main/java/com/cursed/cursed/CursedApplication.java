@@ -15,7 +15,11 @@ public class CursedApplication {
      * @param args
      */
     public static void main(String[] args) {
-		SpringApplication.run(CursedApplication.class, args);
-	}
+        try {
+            SpringApplication.run(CursedApplication.class, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
