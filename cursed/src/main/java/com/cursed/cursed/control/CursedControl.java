@@ -61,6 +61,11 @@ public class CursedControl {
                 .addLimit(limit)
                 .build();
     }
+    
+    @GetMapping("/all")
+    public List<Imej> getAll() {
+        return imejRepo.findAll();
+    }
 
     /**
      *
