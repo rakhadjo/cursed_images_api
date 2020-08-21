@@ -6,9 +6,11 @@
 package com.cursed.cursed.control;
 
 import com.cursed.cursed.misc.Key;
+import com.cursed.cursed.models.APIKey;
 import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
 import com.cursed.cursed.models.Result;
+import com.cursed.cursed.repositories.APIKeyRepo;
 import com.cursed.cursed.repositories.ImejRepo;
 import com.cursed.cursed.repositories.KeyRepo;
 import io.github.bucket4j.Bandwidth;
@@ -41,12 +43,14 @@ public class CursedControl {
     private ImejRepo imejRepo;
     @Autowired
     private KeyRepo keyRepo;
+    @Autowired
+    private APIKeyRepo apiKeyRepo;
     private Random rand = new Random();
 
     private final Bucket bucket;
 
     /**
-     * 
+     *
      */
     public CursedControl() {
         //20 requests maximum
@@ -156,10 +160,32 @@ public class CursedControl {
         return r.toJSON();
     }
     
+    @GetMapping("/sql2")
+    public @ResponseBody
+    String test2SQL(@RequestHeader Map<String, String> headers) {
+        try {
+            String key = headers.get("api_token");
+            APIKey key2 = apiKeyRepo.findByKey(key);
+            return key2.getKey();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        
+    }
+
     @GetMapping("/sql")
     public @ResponseBody
-    String testSQL() {
-        return "success";
+    Iterable<APIKey> testSQL() {
+
+        try {
+            //apiKeyRepo.deleteAll();
+            apiKeyRepo.save(new APIKey());
+            return apiKeyRepo.findAll();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } return null;
+
     }
 
 }

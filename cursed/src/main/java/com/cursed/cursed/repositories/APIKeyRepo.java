@@ -5,13 +5,13 @@
  */
 package com.cursed.cursed.repositories;
 
-import com.cursed.cursed.models.Key2;
+import com.cursed.cursed.models.APIKey;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author rakhadjo
  */
-public interface Key2Repo extends CrudRepository<Key2, Integer> {
-    
+public interface APIKeyRepo extends CrudRepository<APIKey, Integer> {
+    APIKey findByKey(String key);
 }
