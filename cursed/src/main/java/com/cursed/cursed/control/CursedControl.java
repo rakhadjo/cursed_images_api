@@ -90,16 +90,26 @@ public class CursedControl {
         Response r;
         if (bucket.tryConsume(1)) {
             try {
-                Key k = keyRepo.findByEmail(headers.get("email"));
-                if (k.getapi_key().equals(headers.get("api_key"))) {
-                    int num = rand.nextInt((int) imejRepo.count());
+//                Key k = keyRepo.findByEmail(headers.get("email"));
+//                if (k.getapi_key().equals(headers.get("api_key"))) {
+//                    int num = rand.nextInt((int) imejRepo.count());
+//                    r = new Response(Result.SUCCESS);
+//                    r.setImej(imejRepo.findBy_id(num));
+//                } else {
+//                    r = new Response(Result.FAIL_EMAIL_KEY_VERIFICATION);
+//                }
+                APIKey apikey = apiKeyRepo.findByKey(headers.get("api_token"));
+                if (apikey.getKey().equals(headers.get("api_token"))) {
+                    //int num = rand.nextInt((int) imejRepo.count());
                     r = new Response(Result.SUCCESS);
-                    r.setImej(imejRepo.findBy_id(num));
+                    r.setImej(imejRepo.findBy_id(2));
                 } else {
-                    r = new Response(Result.FAIL_EMAIL_KEY_VERIFICATION);
+                    r = new Response(Result.FAIL_KEY_VERIFICATION);
                 }
             } catch (Exception e) {
                 r = new Response(Result.FAIL);
+                r.setMessage(e.getMessage());
+                e.printStackTrace();
             }
         } else {
             r = new Response(Result.TOO_MANY_REQUESTS);
