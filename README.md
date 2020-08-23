@@ -6,12 +6,9 @@ An API designed initially for my Telegram Bot that returns random cursed images 
 Headers are required at all times while making requests, apart from obtaining the key:
 ```
 api_key = [String]
-email   = [String]
 ```
 ### Obtaining an API Key
-```
-POST (host)/api/register
-```
+...in progress
 ### Getting a Random Image
 ```
 GET (host)/api/get
@@ -43,6 +40,7 @@ Required request body:
 ```
 url = [String]
 ```
+...needs work
 ### Response Code Index:
 ...in progress
 
