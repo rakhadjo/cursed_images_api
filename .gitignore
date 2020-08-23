@@ -1,3 +1,8 @@
+# Directories
+cursed/HELP.md
+cursed/nbactions.xml
+cursed/target
+
 # Compiled class file
 *.class
 

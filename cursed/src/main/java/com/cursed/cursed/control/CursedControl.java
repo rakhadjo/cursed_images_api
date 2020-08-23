@@ -5,14 +5,12 @@
  */
 package com.cursed.cursed.control;
 
-import com.cursed.cursed.misc.Key;
 import com.cursed.cursed.models.APIKey;
 import com.cursed.cursed.models.Imej;
 import com.cursed.cursed.models.Response;
 import com.cursed.cursed.models.Result;
 import com.cursed.cursed.repositories.APIKeyRepo;
 import com.cursed.cursed.repositories.ImejRepo;
-import com.cursed.cursed.repositories.KeyRepo;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -41,8 +39,6 @@ public class CursedControl {
 
     @Autowired
     private ImejRepo imejRepo;
-    @Autowired
-    private KeyRepo keyRepo;
     @Autowired
     private APIKeyRepo apiKeyRepo;
     private Random rand = new Random();
@@ -95,25 +91,21 @@ public class CursedControl {
         Response r;
         if (bucket.tryConsume(1)) {
             try {
-//                Key k = keyRepo.findByEmail(headers.get("email"));
-//                if (k.getapi_key().equals(headers.get("api_key"))) {
-//                    int num = rand.nextInt((int) imejRepo.count());
-//                    r = new Response(Result.SUCCESS);
-//                    r.setImej(imejRepo.findBy_id(num));
-//                } else {
-//                    r = new Response(Result.FAIL_EMAIL_KEY_VERIFICATION);
-//                }
-                APIKey apikey = apiKeyRepo.findByKey(headers.get("api_token"));
-                if (apikey.getKey().equals(headers.get("api_token"))) {
-                    //int num = rand.nextInt((int) imejRepo.count());
-                    r = new Response(Result.SUCCESS);
-                    r.setImej(imejRepo.findBy_id(2));
+                APIKey apikey = apiKeyRepo.findByToken(headers.get("api_token"));
+                if (apikey != null) {
+                    if (apikey.getKey().equals(headers.get("api_token"))) {
+                        int num = rand.nextInt((int) imejRepo.count());
+                        r = new Response(Result.SUCCESS);
+                        r.setImej(imejRepo.findBy_id(num));
+                    } else {
+                        r = new Response(Result.FAIL_KEY_VERIFICATION);
+                    }
                 } else {
                     r = new Response(Result.FAIL_KEY_VERIFICATION);
                 }
             } catch (Exception e) {
                 r = new Response(Result.FAIL);
-                r.setMessage(e.getMessage());
+                r.setMessage(e.getLocalizedMessage());
                 e.printStackTrace();
             }
         } else {
@@ -121,33 +113,6 @@ public class CursedControl {
         }
 
         return r.toJSON();
-    }
-
-    /**
-     *
-     * @param headers
-     * @return
-     */
-    @PostMapping("/register")
-    public @ResponseBody
-    Document addKey(@RequestHeader Map<String, String> headers) {
-        Response response;
-        try {
-            Key check = keyRepo.findByEmail(headers.get("email"));
-            if (check == null) {
-                Key k = new Key(headers.get("email"));
-                keyRepo.save(k);
-                response = new Response(Result.SUCCESS);
-                response.setKey(k);
-                return response.toJSON();
-            } else {
-                return new Response(Result.KEY_REGISTER_FAIL).toJSON();
-            }
-        } catch (Exception e) {
-            response = new Response(Result.FAIL);
-            response.setMessage(e.getMessage());
-            return new Document("error", e.getMessage());
-        }
     }
 
     /**
@@ -175,26 +140,22 @@ public class CursedControl {
         return r.toJSON();
     }
     
-    @GetMapping("/sql2")
+    @GetMapping("/sql")
     public @ResponseBody
     String test2SQL(@RequestHeader Map<String, String> headers) {
         try {
             String key = headers.get("api_token");
-            APIKey key2 = apiKeyRepo.findByKey(key);
+            APIKey key2 = apiKeyRepo.findByToken(key);
             return key2.getKey();
         } catch (Exception e) {
             return e.getMessage();
-        }
-        
+        }       
     }
 
-    @GetMapping("/sql")
+    @GetMapping("/allkeys")
     public @ResponseBody
-    Iterable<APIKey> testSQL() {
-
+    Iterable<APIKey> allKeys() {
         try {
-            //apiKeyRepo.deleteAll();
-            apiKeyRepo.save(new APIKey());
             return apiKeyRepo.findAll();
         } catch (Exception e) {
             System.out.println(e.getMessage());

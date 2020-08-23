@@ -13,5 +13,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author rakhadjo
  */
 public interface APIKeyRepo extends CrudRepository<APIKey, Integer> {
-    APIKey findByKey(String key);
+    APIKey findByToken(String token);
 }

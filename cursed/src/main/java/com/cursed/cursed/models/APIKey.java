@@ -36,13 +36,13 @@ public class APIKey {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     @JsonIgnore
-    private String id;
+    private Integer id;
 
-    @Column(name = "key_value")
-    private String key;
+    @Column(name = "token")
+    private String token;
 
     public APIKey() {
-        this.key = keyGen();
+        this.token = keyGen();
     }
 
     private static String keyGen() {
@@ -62,25 +62,25 @@ public class APIKey {
         return newKey;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     public void setKey(String key) {
-        this.key = key;
+        this.token = key;
     }
 
-    public String getId() {
-        return id;
+    public Integer getId() {
+        return this.id;
     }
 
     public String getKey() {
-        return key;
+        return this.token;
     }
 
     public org.bson.Document toJSON() {
         return new org.bson.Document()
-                .append("key", this.key);
+                .append("key", this.token);
     }
 
 }
