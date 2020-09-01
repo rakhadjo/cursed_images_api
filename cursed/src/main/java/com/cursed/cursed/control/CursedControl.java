@@ -40,7 +40,9 @@ public class CursedControl {
     @Autowired
     private ImejRepo imejRepo;
     @Autowired
+    
     private APIKeyRepo apiKeyRepo;
+    
     private Random rand = new Random();
 
     private final Bucket bucket;
@@ -81,19 +83,19 @@ public class CursedControl {
     }
 
     /**
-     *
-     * @param headers
+     * @param api_token
      * @return
      */
     @GetMapping("/get")
     public @ResponseBody
-    Document getRandom(@RequestHeader Map<String, String> headers) {
+    Document getRandom(
+            @RequestHeader("key") String api_token) {
         Response r;
         if (bucket.tryConsume(1)) {
             try {
-                APIKey apikey = apiKeyRepo.findByToken(headers.get("api_token"));
+                APIKey apikey = apiKeyRepo.findByToken(api_token);
                 if (apikey != null) {
-                    if (apikey.getKey().equals(headers.get("api_token"))) {
+                    if (apikey.getKey().equals(api_token)) {
                         int num = rand.nextInt((int) imejRepo.count());
                         r = new Response(Result.SUCCESS);
                         r.setImej(imejRepo.findBy_id(num));
