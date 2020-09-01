@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Random;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,6 +61,16 @@ public class CursedControl {
         this.bucket = Bucket4j.builder()
                 .addLimit(limit)
                 .build();
+    }
+    
+    public String xTraceGen() {
+        String newTrace = "";
+        String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (int i = 0; i < 12; i++) {
+            int num = rand.nextInt(charSet.length());
+            newTrace += charSet.charAt(num);
+        }
+        return newTrace;
     }
     
     @GetMapping("/all")
@@ -123,28 +136,32 @@ public class CursedControl {
      * @return
      */
     @PostMapping("/save")
-    public @ResponseBody
-    Document saveImej(@RequestBody Imej i) {
+    public ResponseEntity<Document> saveImej(
+            @RequestBody Imej i) {
         Response r;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-trace-id", xTraceGen());
         String url = i.getUrl();
         if (imejRepo.findByUrl(url) != null) {
             r = new Response(Result.IMAGE_EXISTS);
-            return r.toJSON();
+            return new ResponseEntity(r.toJSON(), headers, HttpStatus.CONFLICT);
         }
         try {
             imejRepo.save(new Imej(url));
             r = new Response(Result.SUCCESS);
             r.setImej(i);
+            return new ResponseEntity(r.toJSON(), headers, HttpStatus.OK);
         } catch (Exception e) {
             r = new Response(Result.FAIL);
             r.setMessage(e.getMessage());
+            return new ResponseEntity(r.toJSON(), headers, HttpStatus.I_AM_A_TEAPOT);
         }
-        return r.toJSON();
     }
     
     @GetMapping("/sql")
     public @ResponseBody
-    String test2SQL(@RequestHeader Map<String, String> headers) {
+    String test2SQL(
+            @RequestHeader Map<String, String> headers) {
         try {
             String key = headers.get("api_token");
             APIKey key2 = apiKeyRepo.findByToken(key);
@@ -164,6 +181,22 @@ public class CursedControl {
             e.printStackTrace();
         } return null;
 
+    }
+    
+    @GetMapping("/teapot")
+    public ResponseEntity<Document> teapot() {
+        Document teapot = new Document()
+                .append("I'm a little teapot", "Short and stout")
+                .append("Here is my handle", "Here is my spout")
+                .append("When I get all steamed up", "Hear me shout")
+                .append("Tip me over and", "Pour me out!")
+                .append("", "")
+                .append("I'm a very special teapot", "Yes, it's true")
+                .append("Here's an example of what I can do", "I can turn my handle into a spout")
+                .append("Tip me over and", "Pour me out!");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-trace-id", xTraceGen());
+        return new ResponseEntity(teapot, headers, HttpStatus.I_AM_A_TEAPOT);
     }
 
 }
