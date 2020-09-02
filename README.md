@@ -41,6 +41,13 @@ Required request body:
 url = [String]
 ```
 ...needs work
+### Bonus: Teapot Song
+To add more of a cursed-vibe for the API, it can also sing the teapot song through a GET request: </br>
+`GET (host)/api/teapot`
+returns:
+```
+insert little teapot song in JSON here
+```
 ### Response Code Index:
 ...in progress
 
