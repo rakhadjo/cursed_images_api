@@ -1,3 +1,9 @@
 language: java
 jdk:
   - oraclejdk11
+services: 
+  - docker
+  - mysql
+  - mongodb
+notifications:
+  - email: true
