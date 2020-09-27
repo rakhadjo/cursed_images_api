@@ -43,9 +43,9 @@ public class CursedControl {
     @Autowired
     private ImejRepo imejRepo;
     @Autowired
-    
+
     private APIKeyRepo apiKeyRepo;
-    
+
     private Random rand = new Random();
 
     private final Bucket bucket;
@@ -62,7 +62,7 @@ public class CursedControl {
                 .addLimit(limit)
                 .build();
     }
-    
+
     public String xTraceGen() {
         String newTrace = "";
         String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -72,7 +72,7 @@ public class CursedControl {
         }
         return newTrace;
     }
-    
+
     @GetMapping("/all")
     public List<Imej> getAll() {
         return imejRepo.findAll();
@@ -83,7 +83,7 @@ public class CursedControl {
      * @return
      */
     @GetMapping("/test")
-    public Document getTest() {
+    public ResponseEntity getTest() {
         Response r = new Response();
         try {
             List<Imej> list = imejRepo.findAll();
@@ -92,7 +92,7 @@ public class CursedControl {
         } catch (Exception e) {
             r.setCodes(Result.FAIL_GET_IMAGE);
         }
-        return r.toJSON();
+        return new ResponseEntity(r.toJSON(), null, HttpStatus.OK);
     }
 
     /**
@@ -100,10 +100,10 @@ public class CursedControl {
      * @return
      */
     @GetMapping("/get")
-    public @ResponseBody
-    Document getRandom(
+    public ResponseEntity getRandom(
             @RequestHeader("key") String api_token) {
         Response r;
+        HttpStatus status;
         if (bucket.tryConsume(1)) {
             try {
                 APIKey apikey = apiKeyRepo.findByToken(api_token);
@@ -112,22 +112,26 @@ public class CursedControl {
                         int num = rand.nextInt((int) imejRepo.count());
                         r = new Response(Result.SUCCESS);
                         r.setImej(imejRepo.findBy_id(num));
+                        status = HttpStatus.OK;
                     } else {
                         r = new Response(Result.FAIL_KEY_VERIFICATION);
+                        status = HttpStatus.BAD_REQUEST;
                     }
                 } else {
                     r = new Response(Result.FAIL_KEY_VERIFICATION);
+                    status = HttpStatus.BAD_REQUEST;
                 }
             } catch (Exception e) {
                 r = new Response(Result.FAIL);
                 r.setMessage(e.getLocalizedMessage());
                 e.printStackTrace();
+                status = HttpStatus.BAD_REQUEST;
             }
         } else {
             r = new Response(Result.TOO_MANY_REQUESTS);
+            status = HttpStatus.TOO_MANY_REQUESTS;
         }
-
-        return r.toJSON();
+        return new ResponseEntity(r.toJSON(), null, status);
     }
 
     /**
@@ -157,7 +161,7 @@ public class CursedControl {
             return new ResponseEntity(r.toJSON(), headers, HttpStatus.I_AM_A_TEAPOT);
         }
     }
-    
+
     @GetMapping("/sql")
     public @ResponseBody
     String test2SQL(
@@ -168,7 +172,7 @@ public class CursedControl {
             return key2.getKey();
         } catch (Exception e) {
             return e.getMessage();
-        }       
+        }
     }
 
     @GetMapping("/allkeys")
@@ -179,10 +183,11 @@ public class CursedControl {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-        } return null;
+        }
+        return null;
 
     }
-    
+
     @GetMapping("/teapot")
     public ResponseEntity<Document> teapot() {
         Document teapot = new Document()
