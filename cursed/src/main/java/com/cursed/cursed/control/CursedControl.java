@@ -193,7 +193,7 @@ public class CursedControl {
                 .append("", "")
                 .append("I'm a very special teapot", "Yes, it's true")
                 .append("Here's an example of what I can do", "I can turn my handle into a spout")
-                .append("Tip me over and", "Pour me out!");
+                .append("Tip me over and2", "Pour me out!2");
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-trace-id", xTraceGen());
         return new ResponseEntity(teapot, headers, HttpStatus.I_AM_A_TEAPOT);
