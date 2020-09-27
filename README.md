@@ -14,19 +14,19 @@ api_key = [String]
 GET (host)/api/get
 ```
 Successful response body:
-```
+```json
 {
 	"rc": "00",
 	"message": "Success",
 	"imej": {
-		"url": ...
+		"url": "..."
 		}
 }
 ```
 By default, `rc` (response code) of `00` means a successful call.
 
 Failed response body:
-```
+```json
 {
 	"rc": "99",
 	"message": "Undefined Error"
@@ -45,8 +45,17 @@ url = [String]
 To add more of a cursed-vibe for the API, it can also sing the teapot song through a GET request: </br>
 `GET (host)/api/teapot`
 returns:
-```
-insert little teapot song in JSON here
+```json
+{
+	"I'm a little teapot": "Short and stout",
+    	"Here is my handle": "Here is my spout",
+	"When I get all steamed up": "Hear me shout",
+	"Tip me over and": "Pour me out!",
+	"": "",
+	"I'm a very special teapot": "Yes, it's true",
+	"Here's an example of what I can do": "I can turn my handle into a spout",
+   	"Tip me over and2": "Pour me out!2"
+}
 ```
 ### Response Code Index:
 ...in progress
