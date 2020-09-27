@@ -1,4 +1,8 @@
+
+
 # Cursed Images API
+
+[![Build Status](https://travis-ci.com/rakhadjo/cursed_images_api.svg?branch=master)](https://travis-ci.com/rakhadjo/cursed_images_api)
 
 An API designed initially for my Telegram Bot that returns random cursed images found in the internet. This program is currently **locally hosted**. I hope one day I will get it publicly hosted. In-depth documentation will come soon.
 
