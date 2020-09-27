@@ -103,6 +103,7 @@ public class CursedControl {
     public ResponseEntity getRandom(
             @RequestHeader("key") String api_token) {
         Response r;
+        HttpStatus status;
         if (bucket.tryConsume(1)) {
             try {
                 APIKey apikey = apiKeyRepo.findByToken(api_token);
@@ -111,25 +112,26 @@ public class CursedControl {
                         int num = rand.nextInt((int) imejRepo.count());
                         r = new Response(Result.SUCCESS);
                         r.setImej(imejRepo.findBy_id(num));
-                        return new ResponseEntity(r.toJSON(), null, HttpStatus.OK);
+                        status = HttpStatus.OK;
                     } else {
                         r = new Response(Result.FAIL_KEY_VERIFICATION);
-                        return new ResponseEntity(r.toJSON(), null, HttpStatus.BAD_REQUEST);
+                        status = HttpStatus.BAD_REQUEST;
                     }
                 } else {
                     r = new Response(Result.FAIL_KEY_VERIFICATION);
-                    return new ResponseEntity(r.toJSON(), null, HttpStatus.BAD_REQUEST);
+                    status = HttpStatus.BAD_REQUEST;
                 }
             } catch (Exception e) {
                 r = new Response(Result.FAIL);
                 r.setMessage(e.getLocalizedMessage());
                 e.printStackTrace();
-                return new ResponseEntity(r.toJSON(), null, HttpStatus.BAD_REQUEST);
+                status = HttpStatus.BAD_REQUEST;
             }
         } else {
             r = new Response(Result.TOO_MANY_REQUESTS);
-            return new ResponseEntity(r.toJSON(), null, HttpStatus.TOO_MANY_REQUESTS);
+            status = HttpStatus.TOO_MANY_REQUESTS;
         }
+        return new ResponseEntity(r.toJSON(), null, status);
     }
 
     /**
