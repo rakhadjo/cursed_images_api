@@ -1,9 +1,24 @@
 language: java
 jdk:
   - oraclejdk11
+
 services: 
   - docker
   - mysql
   - mongodb
+
 notifications:
   - email: true
+
+git:
+  - depth: false
+  - branches:
+    - only:
+      - master
+      - travis
+
+before_script:
+  - cd cursed
+
+script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
