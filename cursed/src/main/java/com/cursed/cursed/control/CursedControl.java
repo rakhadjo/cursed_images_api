@@ -239,6 +239,10 @@ public class CursedControl {
 
     }
 
+    /**
+     * 
+     * @return 
+     */
     @GetMapping("/teapot")
     public ResponseEntity<Document> teapot() {
         Document teapot = new Document()
