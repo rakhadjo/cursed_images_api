@@ -8,10 +8,10 @@
         <version>2.3.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.cursed</groupId>
-    <artifactId>cursed</artifactId>
+    <groupId>com.cursed_images_api</groupId>
+    <artifactId>cursed_images_api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>cursed</name>
+    <name>cursed_images_api</name>
     <description>Cursed Images API</description>
 
     <properties>
