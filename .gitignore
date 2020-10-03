@@ -3,6 +3,8 @@ cursed/HELP.md
 cursed/nbactions.xml
 cursed/target
 
+application.yml
+
 # Compiled class file
 *.class
 
