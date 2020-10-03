@@ -66,6 +66,10 @@ public class CursedControl {
                 .build();
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String xTraceGen() {
         String newTrace = "";
         String charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -74,6 +78,28 @@ public class CursedControl {
             newTrace += charSet.charAt(num);
         }
         return newTrace;
+    }
+    
+    //from https://www.geeksforgeeks.org/md5-hash-in-java/
+    /**
+     * 
+     * @param input
+     * @return 
+     */
+    public static String getMD5(String input) {
+        try { 
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes()); 
+            BigInteger no = new BigInteger(1, messageDigest); 
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } 
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/all")
@@ -147,7 +173,6 @@ public class CursedControl {
         if (getMD5(bosskey).equals("e25aa11713ee13513afbc874040ef1de")) {
             for (Imej imej : i) {
                 Imej k = new Imej(imej.getUrl());
-                k.setId((int) imejRepo.count());
                 imejRepo.save(k);
             }
             r = new Response(Result.SUCCESS);
@@ -158,23 +183,6 @@ public class CursedControl {
             return new ResponseEntity(r.toJSON(), null, HttpStatus.BAD_REQUEST);
         }} catch (Exception e) {}
         return new ResponseEntity(new Response(Result.FAIL).toJSON(), null, HttpStatus.I_AM_A_TEAPOT);
-    }
-
-    //from https://www.geeksforgeeks.org/md5-hash-in-java/
-    public static String getMD5(String input) {
-        try { 
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes()); 
-            BigInteger no = new BigInteger(1, messageDigest); 
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        } 
-        catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
