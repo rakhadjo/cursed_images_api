@@ -59,6 +59,14 @@ public class Imej {
     public String getUrl() {
         return this.url;
     }
+    
+    /**
+     * 
+     * @param _id 
+     */
+    public void setId(int _id) {
+        this._id = _id;
+    }
 
     /**
      *

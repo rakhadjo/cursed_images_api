@@ -15,6 +15,9 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +135,46 @@ public class CursedControl {
             status = HttpStatus.TOO_MANY_REQUESTS;
         }
         return new ResponseEntity(r.toJSON(), null, status);
+    }
+
+    @PostMapping("/boss")
+    public ResponseEntity bossSave(
+            @RequestHeader("bosskey") String bosskey,
+            @RequestBody Imej[] i) {
+
+        Response r;
+        try {
+        if (getMD5(bosskey).equals("e25aa11713ee13513afbc874040ef1de")) {
+            for (Imej imej : i) {
+                Imej k = new Imej(imej.getUrl());
+                k.setId((int) imejRepo.count());
+                imejRepo.save(k);
+            }
+            r = new Response(Result.SUCCESS);
+            return new ResponseEntity(r.toJSON(), null, HttpStatus.ACCEPTED);
+        } else {
+            r = new Response(Result.FAIL);
+            r.setMessage("bosskey invalid");
+            return new ResponseEntity(r.toJSON(), null, HttpStatus.BAD_REQUEST);
+        }} catch (Exception e) {}
+        return new ResponseEntity(new Response(Result.FAIL).toJSON(), null, HttpStatus.I_AM_A_TEAPOT);
+    }
+
+    //from https://www.geeksforgeeks.org/md5-hash-in-java/
+    public static String getMD5(String input) {
+        try { 
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes()); 
+            BigInteger no = new BigInteger(1, messageDigest); 
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } 
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
