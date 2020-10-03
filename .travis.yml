@@ -17,8 +17,8 @@ git:
       - master
       - travis
 
-before_script:
-  - cd cursed
+# before_script:
+#  - cd cursed
 
 script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
