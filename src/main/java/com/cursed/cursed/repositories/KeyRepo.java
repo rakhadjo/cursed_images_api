@@ -5,7 +5,7 @@
  */
 package com.cursed.cursed.repositories;
 
-import com.cursed.cursed.misc.Key;
+import com.cursed.cursed.models.Key;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -22,6 +22,6 @@ public interface KeyRepo extends MongoRepository<Key, String>{
      * @param email
      * @return
      */
-    Key findByEmail(@Param("email") String email);
+    Key findByToken(@Param("token") String token);
     
 }

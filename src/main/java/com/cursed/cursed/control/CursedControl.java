@@ -5,12 +5,8 @@
  */
 package com.cursed.cursed.control;
 
-import com.cursed.cursed.models.APIKey;
-import com.cursed.cursed.models.Imej;
-import com.cursed.cursed.models.Response;
-import com.cursed.cursed.models.Result;
-import com.cursed.cursed.repositories.APIKeyRepo;
-import com.cursed.cursed.repositories.ImejRepo;
+import com.cursed.cursed.models.*;
+import com.cursed.cursed.repositories.*;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -20,7 +16,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +41,9 @@ public class CursedControl {
     @Autowired
     private ImejRepo imejRepo;
     @Autowired
-
     private APIKeyRepo apiKeyRepo;
+    @Autowired
+    private KeyRepo keyRepo;
 
     private Random rand = new Random();
 
@@ -120,6 +116,7 @@ public class CursedControl {
             r.setImejs(list);
         } catch (Exception e) {
             r.setCodes(Result.FAIL_GET_IMAGE);
+            r.setMessage(e.getMessage());
         }
         return new ResponseEntity(r.toJSON(), null, HttpStatus.OK);
     }
@@ -135,20 +132,20 @@ public class CursedControl {
         HttpStatus status;
         if (bucket.tryConsume(1)) {
             try {
-                APIKey apikey = apiKeyRepo.findByToken(api_token);
+                Key apikey = keyRepo.findByToken(api_token);
                 if (apikey != null) {
-                    if (apikey.getKey().equals(api_token)) {
+                    if (apikey.getapi_key().equals(api_token)) {
                         int num = rand.nextInt((int) imejRepo.count());
                         r = new Response(Result.SUCCESS);
                         r.setImej(imejRepo.findBy_id(num));
                         status = HttpStatus.OK;
                     } else {
                         r = new Response(Result.FAIL_KEY_VERIFICATION);
-                        status = HttpStatus.BAD_REQUEST;
+                        status = HttpStatus.FAILED_DEPENDENCY;
                     }
                 } else {
                     r = new Response(Result.FAIL_KEY_VERIFICATION);
-                    status = HttpStatus.BAD_REQUEST;
+                    status = HttpStatus.HTTP_VERSION_NOT_SUPPORTED;
                 }
             } catch (Exception e) {
                 r = new Response(Result.FAIL);
@@ -166,8 +163,7 @@ public class CursedControl {
     @PostMapping("/boss")
     public ResponseEntity bossSave(
             @RequestHeader("bosskey") String bosskey,
-            @RequestBody Imej[] i) {
-
+                @RequestBody Imej[] i) {
         Response r;
         try {
         if (getMD5(bosskey).equals("e25aa11713ee13513afbc874040ef1de")) {
@@ -213,19 +209,6 @@ public class CursedControl {
         }
     }
 
-    @GetMapping("/sql")
-    public @ResponseBody
-    String test2SQL(
-            @RequestHeader Map<String, String> headers) {
-        try {
-            String key = headers.get("api_token");
-            APIKey key2 = apiKeyRepo.findByToken(key);
-            return key2.getKey();
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
-
     @GetMapping("/allkeys")
     public @ResponseBody
     Iterable<APIKey> allKeys() {
@@ -236,7 +219,6 @@ public class CursedControl {
             e.printStackTrace();
         }
         return null;
-
     }
 
     /**

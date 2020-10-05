@@ -5,7 +5,6 @@
  */
 package com.cursed.cursed.models;
 
-import com.cursed.cursed.misc.Key;
 import java.util.List;
 import org.bson.Document;
 
