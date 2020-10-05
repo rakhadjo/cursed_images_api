@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cursed.cursed.misc;
+package com.cursed.cursed.models;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

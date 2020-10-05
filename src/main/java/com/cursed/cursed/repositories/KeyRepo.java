@@ -5,7 +5,7 @@
  */
 package com.cursed.cursed.repositories;
 
-import com.cursed.cursed.misc.Key;
+import com.cursed.cursed.models.Key;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
