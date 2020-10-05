@@ -22,6 +22,6 @@ public interface KeyRepo extends MongoRepository<Key, String>{
      * @param email
      * @return
      */
-    Key findByApi_key(@Param("api_key") String api_key);
+    Key findByToken(@Param("token") String token);
     
 }
