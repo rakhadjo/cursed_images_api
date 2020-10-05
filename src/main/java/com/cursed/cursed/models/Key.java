@@ -28,55 +28,17 @@ public class Key {
 
     @Id
     private ObjectId _id;
-    private String email;
     private String api_key;
-
-    private static boolean isValid(String email) {
-        return Pattern.matches(VALID_EMAIL_ADDRESS_REGEX, email);
-    }
 
     private static boolean isValidKey(String key) {
         return Pattern.matches(VALID_API_KEY_REGEX, key);
     }
-    
-    /**
-     *
-     * @param k
-     * @return
-     */
-    public boolean verify(Key k) {
-        return isValidKey(k.getapi_key()) && isValid(k.getEmail());
-    }
 
     /**
      *
      */
-    public Key() {}
-
-    /**
-     *
-     * @param email
-     */
-    public Key(String email) {
-        if (isValid(email)) {
-            this.email = email;
-            this.api_key = keyGen();
-        } else {
-            this.email = "";
-            this.api_key = "";
-        }
-    }
-
-    /**
-     *
-     * @param email
-     * @param key
-     */
-    public Key(String email, String key) {
-        if (isValid(email) && isValidKey(key)) {
-            this.email = email;
-            this.api_key = key;
-        }
+    public Key() {
+        this.api_key = keyGen();
     }
 
     private static String keyGen() {
@@ -95,24 +57,6 @@ public class Key {
      */
     public ObjectId get_id() {
         return this._id;
-    }
-
-    /**
-     *
-     * @param email
-     */
-    public void setEmail(String email) {
-        if (isValid(email)) {
-            this.email = email;
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getEmail() {
-        return this.email;
     }
 
     /**
@@ -139,7 +83,6 @@ public class Key {
      */
     public org.bson.Document toJSON() {
         return new org.bson.Document()
-                .append("email", this.email)
                 .append("api_key", this.api_key);
     }
 }
